@@ -1,3 +1,9 @@
+"""
+Most active cookie problem from Quantcast - Samuel Wang
+-------------------------------------------------------
+-I considered adding error handling for cases with invalid file paths, but I didn't in the interest of efficiency
+and because it wasn't mentioned under the assumptions
+"""
 import argparse
 
 def parse_input():
@@ -18,9 +24,6 @@ def find_most_active_cookies(file_path, given_date):
     """
     cookies = {}
     with open(file_path, 'r') as file:
-        # Skip first row
-        next(file)
-
         for line in file:
             cookie, timestamp = line.strip().split(",")
             date = timestamp.split("T")[0]
