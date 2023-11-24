@@ -6,6 +6,7 @@ def parse_input_tester():
     """
 
     parser = parse_input()
+
     # Correct file path and date
     assert parser.file_path == "file_path.csv"
     assert parser.date == "2023-11-18"
@@ -13,6 +14,8 @@ def parse_input_tester():
     # Incorrect file path and date
     assert parser.file_path != "wrong_file_path.csv"
     assert parser.date != "2022-11-18"
+
+    assert ValueError("ValueError: Time format is not correct, the error msg is : time data '2018-12-0909T14:19:00+00:00' does not match format '%Y-%m-%dT%H:%M:%S+00:00'")
 
     return True
 
@@ -44,7 +47,7 @@ def find_most_active_cookies_tester():
     return True
 
 
-def main():
+def data_processing():
     print("Testing parse_input ... ")
     print("PASS" if parse_input_tester() else "FAIL")
 
@@ -52,4 +55,4 @@ def main():
     print("PASS" if find_most_active_cookies_tester() else "FAIL")
 
 if __name__ == "__main__":
-    main()
+    data_processing()
