@@ -27,7 +27,7 @@ def find_most_active_cookies(file_path, given_date) -> List[str]:
     :return: (string list) list of names of most active cookies
     """
     
-    # OPen file, validate, convert and aggragate value
+    # Open file, validate, convert and aggragate value
     cookies = {}
     with open(file_path, 'r') as file:
         for line in file:
@@ -36,7 +36,8 @@ def find_most_active_cookies(file_path, given_date) -> List[str]:
             try:
                 cookie, timestamp = line.strip().split(",")
                 time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+00:00")
-                date = timestamp.split("T")[0]
+                date = time.date()
+                # date = timestamp.split("T")[0]
                 # With regex
                 # data_match = re.search("\d\d\d\d-\d\d-\d\d$", date).group(0)
                 # if data_match is None:
@@ -48,7 +49,7 @@ def find_most_active_cookies(file_path, given_date) -> List[str]:
             except Exception as e:
                 raise e
 
-            if date == given_date:
+            if str(date) == str(given_date):
                 if cookie not in cookies:
                     cookies[cookie] = 1
                 else:
@@ -60,12 +61,62 @@ def find_most_active_cookies(file_path, given_date) -> List[str]:
 
     return most_active_cookies
 
+def parse_file(file_path) -> List[str]:
+    # Open file, validate, convert and aggragate value
+    cookies = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            if line.strip() == "cookie,timestamp":
+                continue
+            try:
+                cookie, timestamp = line.strip().split(",")
+                time = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+00:00")
+                date = time.date()
+                # date = timestamp.split("T")[0]
+                # With regex
+                # data_match = re.search("\d\d\d\d-\d\d-\d\d$", date).group(0)
+                # if data_match is None:
+                #     raise Exception()
+                cookies.append((cookie, time))
+
+            except BadInputException as e:
+                raise e
+            except ValueError as e:
+                raise ValueError(f"""Time format is not correct, the error msg is :\n{str(e)}""")
+            except Exception as e:
+                raise e
+
+            return cookies
+
+
+def max_cookies_on_day(cookies, given_date):
+    cookie_dict = {}
+
+    for cookie, timestamp in cookies:
+        if str(timestamp.date()) == str(given_date):
+            if cookie not in cookie_dict:
+                cookie_dict[cookie] = 1
+            else:
+                cookie_dict[cookie] += 1
+    
+    max_number = max(cookie_dict.values()) if cookie_dict else 0
+    most_active_cookies = [cookie for cookie, number in cookie_dict.items() if number == max_number]
+
+    return most_active_cookies
+
 def main():
     args = parse_input()
     file_path = args.file_path
     given_date = args.date
 
-    most_active_cookies = find_most_active_cookies(file_path, given_date)
+    try:
+        date = datetime.strptime(given_date, "%Y-%m-%d").date()
+        # most_active_cookies = find_most_active_cookies(file_path, given_date)
+        cookie_list = parse_file(file_path)
+        most_active_cookies = max_cookies_on_day(cookie_list, given_date)
+
+    except ValueError as e:
+        raise ValueError(f"Please check input time: {given_date}")
     
     # Returns most active cookies
     for cookie in most_active_cookies:

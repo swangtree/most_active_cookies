@@ -3,6 +3,7 @@ from most_active_cookie import *
 def parse_input_tester():
     """
     Tests that parse_input returns the correct file_path and date using 'python most_active_cookie_tester.py file_path.csv -d 2023-11-18'
+    python most_active_cookie.py cookie_log.csv -d 2018-12-09
     """
 
     parser = parse_input()
